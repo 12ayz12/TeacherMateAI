@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>공문 및 생활기록부 생성기</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 8px; margin-top: 4px; }
+        button { margin-top: 20px; padding: 10px 20px; font-size: 16px; }
+        #result, #saenggiResult { white-space: pre-wrap; background: #f4f4f4; padding: 15px; border: 1px solid #ccc; margin-top: 20px; }
+        .tab-btn { padding: 10px 20px; font-size: 16px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #888; background: #eee; cursor: pointer;}
+        .tab-btn.active { background: #fff; border-bottom: none; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <div>
+        <button class="tab-btn active" id="gongmunBtn" onclick="showTab('gongmun')">공문 생성</button>
+        <button class="tab-btn" id="saenggiBtn" onclick="showTab('saenggi')">생활기록부</button>
+    </div>
+
+    <div id="gongmunTab">
+        <h1>교사 및 행정실용 공문 생성기</h1>
+        <label for="event">행사명</label>
+        <input type="text" id="event">
+
+        <label for="summary">요약/취지</label>
+        <textarea id="summary" rows="2"></textarea>
+
+        <label for="date">일시</label>
+        <input type="text" id="date">
+
+        <label for="time">시간</label>
+        <input type="text" id="time">
+
+        <label for="location">장소</label>
+        <input type="text" id="location">
+
+        <label for="target">대상</label>
+        <input type="text" id="target">
+
+        <label for="application">신청 방법</label>
+        <input type="text" id="application">
+
+        <label for="contact">문의처 (선택)</label>
+        <input type="text" id="contact">
+
+        <label for="attachments">붙임파일명</label>
+        <input type="text" id="attachments">
+
+        <button onclick="generateDocument()">공문을 생성합니다.</button>
+        <div id="result"></div>
+    </div>
+
+    <div id="saenggiTab" style="display:none">
+        <h1>생활기록부 평가문 생성기</h1>
+        <label for="subject">과목명</label>
+        <input type="text" id="subject">
+
+        <label for="area">평가영역</label>
+        <input type="text" id="area">
+
+        <label for="element">평가요소</label>
+        <input type="text" id="element">
+
+        <label for="criterion">성취기준</label>
+        <input type="text" id="criterion">
+
+        <label for="level">평가등급</label>
+        <select id="level">
+            <option value="잘함">잘함</option>
+            <option value="보통">보통</option>
+            <option value="노력요함">노력요함</option>
+        </select>
+
+        <label for="character">학생 특성</label>
+        <textarea id="character" rows="2"></textarea>
+
+        <button onclick="generateSaenggi()">생활기록부 생성</button>
+        <div id="saenggiResult"></div>
+    </div>
+
+    <script>
+        function showTab(tab) {
+            document.getElementById('gongmunTab').style.display = (tab === 'gongmun') ? 'block' : 'none';
+            document.getElementById('saenggiTab').style.display = (tab === 'saenggi') ? 'block' : 'none';
+            document.getElementById('gongmunBtn').classList.toggle('active', tab === 'gongmun');
+            document.getElementById('saenggiBtn').classList.toggle('active', tab === 'saenggi');
+        }
+
+        async function generateDocument() {
+            const event = document.getElementById('event').value;
+            const summary = document.getElementById('summary').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const location = document.getElementById('location').value;
+            const target = document.getElementById('target').value;
+            const application = document.getElementById('application').value;
+            const contact = document.getElementById('contact').value;
+            const attachments = document.getElementById('attachments').value;
+            const resultDiv = document.getElementById('result');
+
+            try {
+                const response = await fetch('https://gongmun-jagseonggi.onrender.com/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event, summary, date, time, location, target, application, contact, attachments })
+                });
+
+                const data = await response.json();
+                resultDiv.textContent = data.result || ('❌ 오류: ' + (data.error || '알 수 없는 오류'));
+            } catch (err) {
+                resultDiv.textContent = '❌ 요청 실패: ' + err.message;
+            }
+        }
+
+        async function generateSaenggi() {
+            const subject = document.getElementById('subject').value;
+            const area = document.getElementById('area').value;
+            const element = document.getElementById('element').value;
+            const criterion = document.getElementById('criterion').value;
+            const level = document.getElementById('level').value;
+            const character = document.getElementById('character').value;
+            const resultDiv = document.getElementById('saenggiResult');
+
+            try {
+                const response = await fetch('https://gongmun-jagseonggi.onrender.com/generate_saenggi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ subject, area, element, criterion, level, character })
+                });
+
+                const data = await response.json();
+                resultDiv.textContent = data.result || ('❌ 오류: ' + (data.error || '알 수 없는 오류'));
+            } catch (err) {
+                resultDiv.textContent = '❌ 요청 실패: ' + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
