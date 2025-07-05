@@ -130,16 +130,16 @@
         <!-- 생활기록부 생성 폼 -->
         <div id="saenggiTab" style="display:none">
             <label for="subject">과목명</label>
-            <input type="text" id="subject">
+            <input type="text" id="subject" placeholder="예: 과학">
 
             <label for="area">평가영역</label>
-            <input type="text" id="area">
+            <input type="text" id="area" placeholder="예: 과학 지식(지식, 이해)">
 
             <label for="element">평가요소</label>
-            <input type="text" id="element">
+            <input type="text" id="element" placeholder="예: 기체 발생 장치를 꾸며 산소를 발생시키고 산소의 성질 확인하기">
 
             <label for="criterion">성취기준</label>
-            <input type="text" id="criterion">
+            <input type="text" id="criterion" placeholder="예: [6과10-01] 산소, 이산화 탄소를 실험을 통해 발생시키고 성질을 확인한 후, 각 기체의 성질을 설명할 수 있다.">
 
             <label for="level">평가등급</label>
             <select id="level">
@@ -149,7 +149,7 @@
             </select>
 
             <label for="character">학생 특성</label>
-            <textarea id="character" rows="2"></textarea>
+            <textarea id="character" rows="2" placeholder="예: 수업 태도가 적극적이고 책임감이 강함"></textarea>
 
             <button class="submit-btn" onclick="generateSaenggi()">생활기록부 생성</button>
             <div class="result-box" id="saenggiResult"></div>
